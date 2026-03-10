@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyAspNetApp.Data;
+using MyAspNetApp.Models;
+using MyAspNetApp.Services;
 
 // When the app runs as a compiled exe from bin\Debug\net10.0, the working directory
 // is the bin folder and wwwroot cannot be found. Walk up parent directories until
@@ -27,6 +29,12 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 
 // Add MVC services
 builder.Services.AddControllersWithViews();
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<NotificationService>();
+
+// Bind email settings and register the Gmail SMTP email service
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<EmailService>();
 
 // Add database context
 builder.Services.AddDbContext<AppDbContext>(options =>

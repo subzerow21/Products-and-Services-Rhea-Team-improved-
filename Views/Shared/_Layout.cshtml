@@ -1,3 +1,8 @@
+@inject NotificationService NotifService
+@{
+    var serverNotifications = NotifService.GetNotifications("guest");
+    NotifService.ClearNotifications("guest");
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +56,7 @@
                     <div class="notif-wrap" id="notif-wrap">
                         <button class="hdr-icon-btn notif-btn" id="notif-btn" onclick="toggleNotifDropdown()" aria-label="Notifications">
                             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                            <span class="notif-dot" id="notif-dot"></span>
+                            <span class="notif-dot" id="notif-dot" style="@(serverNotifications.Any() ? "" : "display:none")"></span>
                         </button>
                         <div class="notif-dropdown" id="notif-dropdown">
                             <div class="notif-header">
@@ -59,33 +64,29 @@
                                 <button class="notif-clear-btn" onclick="clearNotifications()">Clear all</button>
                             </div>
                             <ul class="notif-list" id="notif-list">
-                                <li class="notif-item unread">
-                                    <div class="notif-icon notif-icon-order">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-                                    </div>
-                                    <div class="notif-body">
-                                        <p class="notif-text">Your order has been confirmed!</p>
-                                        <span class="notif-time">Just now</span>
-                                    </div>
-                                </li>
-                                <li class="notif-item unread">
-                                    <div class="notif-icon notif-icon-preorder">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                    </div>
-                                    <div class="notif-body">
-                                        <p class="notif-text">Apex Carbon Racer 2026 pre-order opens March 2026.</p>
-                                        <span class="notif-time">2 hours ago</span>
-                                    </div>
-                                </li>
-                                <li class="notif-item">
-                                    <div class="notif-icon notif-icon-promo">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                                    </div>
-                                    <div class="notif-body">
-                                        <p class="notif-text">New arrivals just dropped — check them out!</p>
-                                        <span class="notif-time">1 day ago</span>
-                                    </div>
-                                </li>
+                                @if (!serverNotifications.Any())
+                                {
+                                    <li class="notif-item">
+                                        <div class="notif-body" style="padding:1rem;text-align:center;color:#888;width:100%;">
+                                            <p class="notif-text">No new notifications</p>
+                                        </div>
+                                    </li>
+                                }
+                                else
+                                {
+                                    @foreach (var notif in serverNotifications)
+                                    {
+                                        <li class="notif-item unread">
+                                            <div class="notif-icon notif-icon-order">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                                            </div>
+                                            <div class="notif-body">
+                                                <p class="notif-text">@notif.Message</p>
+                                                <span class="notif-time">@notif.Timestamp.ToString("MMM d, h:mm tt")</span>
+                                            </div>
+                                        </li>
+                                    }
+                                }
                             </ul>
                         </div>
                     </div>
