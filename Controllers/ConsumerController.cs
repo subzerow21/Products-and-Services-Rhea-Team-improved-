@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyAspNetApp.Data;
+using MyAspNetApp.Models;
 using System.Security.Claims;
 
 namespace MyAspNetApp.Controllers

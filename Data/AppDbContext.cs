@@ -12,4 +12,4 @@ namespace MyAspNetApp.Data
         public DbSet<DbConsumer> Consumers { get; set; }
         public DbSet<DbUser> Users { get; set; }
     }
-}    }
+}    
